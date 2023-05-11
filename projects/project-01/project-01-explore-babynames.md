@@ -31,11 +31,12 @@ library(tidyverse)
 # Read the csv file `file_name_names` as data frame `tbl_names`
 file_name_names <- here::here("data/names.csv.gz")
 tbl_names <- readr::read_csv(
-  file = ___, 
+  file = file_name_names, 
   show_col_types = FALSE
 )
 
 # Print `tbl_names`
+tbl_names
 ```
 
 ### Question 1: \[Popular Names\] What are the most popular names?
@@ -56,18 +57,18 @@ names of the decade starting in 2011.
 ``` r
 tbl_names_popular = tbl_names |> 
   # Keep ROWS for year > 2010 and <= 2020
-  filter(year > ___, ___ <= ___) |> 
+  filter(year > 2010, year <= 2020) |> 
   # Group by sex and name
-  group_by(___, ___) |> 
+  group_by(sex, name) |> 
   # Summarize the number of births
   summarize(
-    nb_births = ___(nb_births),
+    nb_births = sum(nb_births),
     .groups = "drop"
   ) |> 
   # Group by sex 
-  ___(___) |>  
+  group_by(sex) |>  
   # For each sex, keep the top 5 rows by number of births
-  slice_max(___, n = ___)
+  slice_max(nb_births, n = 5)
 
 tbl_names_popular
 ```
@@ -86,20 +87,20 @@ plot’s purpose and findings.
 ``` r
 tbl_names_popular |> 
   # Reorder the names by number of births
-  mutate(name = fct_reorder(name, nb_births)) |>
+  mutate(name = fct_reorder(name,nb_births)) |>
   # Initialize a ggplot for name vs. nb_births
-  ggplot(aes(x = ___, y = ___)) +
+  ggplot(aes(y = name, x = nb_births)) +
   # Add a column plot layer
   geom_col() +
   # Facet the plots by sex
-  facet_wrap(~ ___, scales = "free_y") +
+  facet_wrap(~ sex, scales = "free_y") +
   # Add labels (title, subtitle, caption, x, y)
   labs(
-    title = '___',
-    subtitle = '___',
-    caption = '___',
-    x = '___',
-    y = '___'
+    title = 'Most popular names',
+    subtitle = 'Understand naming trends',
+    caption = 'Source:SSC',
+    y = 'Name',
+    x = 'Number of Babies'
   ) +
   # Fix the x-axis scale 
   scale_x_continuous(
