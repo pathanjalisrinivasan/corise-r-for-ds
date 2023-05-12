@@ -563,7 +563,8 @@ tbl_names_vowel_consonant |>
   # Initialize a ggplot of `pct_births` vs. `year`
    ggplot(aes(x=year, y=pct_births)) +
   # Add an area layer with fill = first_last
-
+  geom_tile(aes(fill = first_last)) +
+  geom_area(alpha = 0.5) +
   # Facet wrap plot by `sex`
   facet_wrap(~ sex, scales = "free_y") +
   # Add labels (title, subtitle, caption, x, y)
