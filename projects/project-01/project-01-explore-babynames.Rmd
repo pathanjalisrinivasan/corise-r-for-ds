@@ -380,25 +380,22 @@ get_letter_type <- function(letter) {
 
 tbl_names_vowel_consonant <- tbl_names |> 
   # Add NEW column named `first_letter_type`
-  
+  mutate(first_letter_type = get_letter_type(first_letter)) |>
   # Add NEW column named `last_letter_type`
-  
+  mutate(last_letter_type = get_letter_type(last_letter)) |>
   # Group by `sex`, `year`, `first_letter_type` and `last_letter_type`
-  
+  group_by(sex, year, first_letter_type, last_letter_type) |> 
   # Summarize the total number of births
-  
-  
-  
-  
+  summarize(nb_births = sum(nb_births), .groups = "drop") |>
   # Group by `sex` and` `year`
-  
+  group_by(sex, year) |> 
   # Add NEW column with `pct_births` calculated as `nb_births / sum(nb_births)`
-   
+  mutate(pct_births = nb_births / sum(nb_births)) |>
   # Ungroup the data
-  
+  ungroup() |>
   # Unite `first_letter_type` and `last_letter_type` into a NEW column named `first_last`
- 
-
+  unite(first_last, first_letter_type, last_letter_type, sep="_")
+  
 tbl_names_vowel_consonant
 ```
 
@@ -411,20 +408,19 @@ tbl_names_vowel_consonant |>
   # Reorder `first_last` by the median `pct_births`
   mutate(first_last = fct_reorder(first_last, pct_births, median)) |>
   # Initialize a ggplot of `pct_births` vs. `year`
-  
+   ggplot(aes(x=year, y=pct_births)) +
   # Add an area layer with fill = first_last
-  
+
   # Facet wrap plot by `sex`
-  
+  facet_wrap(~ sex, scales = "free_y") +
   # Add labels (title, subtitle, caption, x, y)
-  
-  
-  
-  
-
-
-
-
+  labs(
+      title = "Combination of first and last letter" , # can't run this viz
+      subtitle = "For each sex",
+      caption = "Source: SSC",
+      x = "Year",
+      y = 'Percentage of births'
+    ) +
   # Clean up x and y axis scales
   scale_x_continuous(
     expand = c(0, 0)
