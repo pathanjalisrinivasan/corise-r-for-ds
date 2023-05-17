@@ -5,9 +5,10 @@ output: github_document
 
 ```{r setup, message = FALSE, include = FALSE}
 library(tidyverse)
+
 knitr::opts_chunk$set(
   echo = TRUE,
-  eval = FALSE,
+  error = TRUE,
   collapse = TRUE,
   comment = "#>",
   fig.path = "img/",
@@ -42,8 +43,8 @@ Let us start by reading in the baby names data from `data/names.csv.gz`.
 # Load the tidyverse package
 library(tidyverse)
 # Read data/names.csv.gz into a data frame named `tbl_names`
-file_name_names <- here::here('data/names.csv.gz')
-tbl_names <- readr::read_csv(file_name_names, show_col_types = TRUE)
+file_name <- here::here('data/names.csv.gz')
+tbl_names <- readr::read_csv(file_name, show_col_types = TRUE)
 # Print tbl_names
 tbl_names
 ```
